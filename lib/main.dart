@@ -1,24 +1,45 @@
 import 'package:flutter/material.dart';
 
-// Ponto de partida do app
+//INÍCIO DO APLICATIVO ============================================================ 
 void main() {
   runApp(const CalculadoraApp());
 }
 
-// Widget raiz: configura o aplicativo
+
+/* 
+ WIDGET PRINCIPAL DO APLICATIVO
+
+ - O CalculadoraApp é StatelessWidget porque ele não precisa
+ controlar nenhuma informação que muda.
+
+ A informação que muda (o visor) ficará na TelaCalculadora.
+*/ 
 class CalculadoraApp extends StatelessWidget {
   const CalculadoraApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false, // remove a faixa "DEBUG" do canto
+      // Remove a faixa "DEBUG" do canto da tela.
+      debugShowCheckedModeBanner: false,
+
+      // Define a primeira tela do aplicativo.
       home: const TelaCalculadora(),
     );
   }
 }
 
-// Tela da calculadora: é Stateful porque o visor muda
+
+/* 
+  TELA DA CALCULADORA
+  - A tela é Stateful porque o valor do visor pode mudar.
+
+ Exemplo:
+ visor = '0'
+ usuário aperta 5
+ visor = '5'
+*/ 
+
 class TelaCalculadora extends StatefulWidget {
   const TelaCalculadora({super.key});
 
@@ -26,172 +47,165 @@ class TelaCalculadora extends StatefulWidget {
   State<TelaCalculadora> createState() => _TelaCalculadoraState();
 }
 
-class _TelaCalculadoraState extends State<TelaCalculadora> {
-  // Texto exibido no visor
-  String visor = '0';
 
-  // Chamada quando um botão de número é clicado
+/* 
+  ESTADO DA CALCULADORA ============================================================
+*/ 
+class _TelaCalculadoraState extends State<TelaCalculadora> {
+
+  String visor = '0'; // Guarda o texto que aparece no visor.
+
   void digitarNumero(String numero) {
     setState(() {
+
+      // Se o visor estiver mostrando apenas 0,
+      // substituímos o 0 pelo número digitado.
       if (visor == '0') {
         visor = numero;
-      } else {
+      }
+
+      // Caso contrário, adicionamos o número
+      // ao final do que já está no visor.
+      else {
         visor = visor + numero;
       }
     });
   }
 
+
+  /* 
+   Botão de número
+   
+   - Método para evitar repetir o mesmo código
+   várias vezes nos botões.
+  */
+  Widget botaoNumero(String numero) {
+    return ElevatedButton(
+      onPressed: () {
+        digitarNumero(numero);
+      },
+      child: Text(numero),
+    );
+  }
+
+
+  // ----------------------------------------------------------
+  // Botão de operação
+  // ----------------------------------------------------------
+  Widget botaoOperacao(String simbolo) {
+    return ElevatedButton(
+      onPressed: () {
+        print(simbolo);
+      },
+      child: Text(simbolo),
+    );
+  }
+
+
+  // ==========================================================
+  // CONSTRUÇÃO DA TELA
+  // ==========================================================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      // --------------------------------------------------------
+      // Barra superior
+      // --------------------------------------------------------
       appBar: AppBar(
-        title: Text('Calculadora', style: TextStyle(fontSize: 30)),
+        title: const Text(
+          'Calculadora',
+          style: TextStyle(fontSize: 30),
+        ),
       ),
 
+
+      // --------------------------------------------------------
+      // Corpo da calculadora
+      // --------------------------------------------------------
       body: Column(
         children: [
-          // Visor da calculadora -------------->
+
+          // VISOR ==============================================
           Container(
             height: 200,
             color: Colors.black,
-            padding: EdgeInsets.all(24),
+
+            // Espaçamento interno do visor.
+            padding: const EdgeInsets.all(24),
+
+            // Coloca o número no canto inferior direito.
             alignment: Alignment.bottomRight,
 
             child: Text(
               visor,
-              style: TextStyle(fontSize: 48, color: Colors.white),
+              style: const TextStyle(
+                fontSize: 48,
+                color: Colors.white,
+              ),
             ),
           ),
 
-          // Primeira linha de botões -------------------->
+
+          // PRIMEIRA LINHA =======================================
           Row(
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  digitarNumero('1');
-                },
-                child: Text('1'),
-              ),
+              botaoNumero('1'),
+              botaoNumero('2'),
+              botaoNumero('3'),
 
-              ElevatedButton(
-                onPressed: () {
-                  digitarNumero('2');
-                },
-                child: Text('2'),
-              ),
-
-              ElevatedButton(
-                onPressed: () {
-                  digitarNumero('3');
-                },
-                child: Text('3'),
-              ),
-
-              ElevatedButton(
-                onPressed: () {
-                  print('÷');
-                },
-                child: Text('÷'),
-              ),
+              botaoOperacao('÷'),
             ],
           ),
 
-          // Segunda linha de botões -------------------->
+
+          // SEGUNDA LINHA
           Row(
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  digitarNumero('4');
-                },
-                child: Text('4'),
-              ),
+              botaoNumero('4'),
+              botaoNumero('5'),
+              botaoNumero('6'),
 
-              ElevatedButton(
-                onPressed: () {
-                  digitarNumero('5');
-                },
-                child: Text('5'),
-              ),
-
-              ElevatedButton(
-                onPressed: () {
-                  digitarNumero('6');
-                },
-                child: Text('6'),
-              ),
-
-              ElevatedButton(
-                onPressed: () {
-                  print('×');
-                },
-                child: Text('×'),
-              ),
+              botaoOperacao('×'),
             ],
           ),
 
-          // Terceira linha de botões -------------------->
+
+          // TERCEIRA LINHA =======================================
           Row(
             children: [
-              ElevatedButton(
-                onPressed: () {
-                  digitarNumero('7');
-                },
-                child: Text('7'),
-              ),
+              botaoNumero('7'),
+              botaoNumero('8'),
+              botaoNumero('9'),
 
-              ElevatedButton(
-                onPressed: () {
-                  digitarNumero('8');
-                },
-                child: Text('8'),
-              ),
-
-              ElevatedButton(
-                onPressed: () {
-                  digitarNumero('9');
-                },
-                child: Text('9'),
-              ),
-
-              ElevatedButton(
-                onPressed: () {
-                  print('-');
-                },
-                child: Text('-'),
-              ),
+              botaoOperacao('-'),
             ],
           ),
 
-          // Última linha: limpar, zero, igual e soma
+
+          // ÚLTIMA LINHA =======================================
           Row(
             children: [
+
+              // Por enquanto o C apenas imprime no console.
               ElevatedButton(
                 onPressed: () {
                   print('C');
                 },
-                child: Text('C'),
+                child: const Text('C'),
               ),
 
-              ElevatedButton(
-                onPressed: () {
-                  digitarNumero('0');
-                },
-                child: Text('0'),
-              ),
+              botaoNumero('0'),
 
+              // Por enquanto o = apenas imprime no console.
               ElevatedButton(
                 onPressed: () {
                   print('=');
                 },
-                child: Text('='),
+                child: const Text('='),
               ),
 
-              ElevatedButton(
-                onPressed: () {
-                  print('+');
-                },
-                child: Text('+'),
-              ),
+              botaoOperacao('+'),
             ],
           ),
         ],
