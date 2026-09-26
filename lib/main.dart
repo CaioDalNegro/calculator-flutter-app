@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-//INÍCIO DO APLICATIVO ============================================================ 
+//INÍCIO DO APLICATIVO ============================================================
 void main() {
   runApp(const CalculadoraApp());
 }
-
 
 /* 
  WIDGET PRINCIPAL DO APLICATIVO
@@ -13,7 +12,7 @@ void main() {
  controlar nenhuma informação que muda.
 
  A informação que muda (o visor) ficará na TelaCalculadora.
-*/ 
+*/
 class CalculadoraApp extends StatelessWidget {
   const CalculadoraApp({super.key});
 
@@ -29,7 +28,6 @@ class CalculadoraApp extends StatelessWidget {
   }
 }
 
-
 /* 
   TELA DA CALCULADORA
   - A tela é Stateful porque o valor do visor pode mudar.
@@ -38,7 +36,7 @@ class CalculadoraApp extends StatelessWidget {
  visor = '0'
  usuário aperta 5
  visor = '5'
-*/ 
+*/
 
 class TelaCalculadora extends StatefulWidget {
   const TelaCalculadora({super.key});
@@ -47,23 +45,21 @@ class TelaCalculadora extends StatefulWidget {
   State<TelaCalculadora> createState() => _TelaCalculadoraState();
 }
 
-
 /* 
   ESTADO DA CALCULADORA ============================================================
-*/ 
+*/
 class _TelaCalculadoraState extends State<TelaCalculadora> {
-
   String visor = '0'; // Guarda o texto que aparece no visor.
+  double? primeiroNumero; // Guarda o primeiro número da conta.
+  String? operacao; // Guarda qual operação o usuário escolheu.
 
   void digitarNumero(String numero) {
     setState(() {
-
       // Se o visor estiver mostrando apenas 0,
       // substituímos o 0 pelo número digitado.
       if (visor == '0') {
         visor = numero;
       }
-
       // Caso contrário, adicionamos o número
       // ao final do que já está no visor.
       else {
@@ -72,6 +68,14 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
     });
   }
 
+  void escolherOperacao(String simbolo) {
+    primeiroNumero = double.parse(visor);
+    operacao = simbolo;
+
+    setState(() {
+      visor = '0';
+    });
+  }
 
   /* 
    Botão de número
@@ -88,20 +92,19 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
     );
   }
 
-
   // ----------------------------------------------------------
   // Botão de operação
   // ----------------------------------------------------------
   Widget botaoOperacao(String simbolo) {
     return ElevatedButton(
       onPressed: () {
-        print(simbolo);
+        escolherOperacao(simbolo);
       },
       child: Text(simbolo),
     );
   }
 
-    // ----------------------------------------------------------
+  // ----------------------------------------------------------
   // Botão de limpar
   // ----------------------------------------------------------
   Widget limpar() {
@@ -115,31 +118,24 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
     );
   }
 
-
   // ==========================================================
   // CONSTRUÇÃO DA TELA
   // ==========================================================
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       // --------------------------------------------------------
       // Barra superior
       // --------------------------------------------------------
       appBar: AppBar(
-        title: const Text(
-          'Calculadora',
-          style: TextStyle(fontSize: 30),
-        ),
+        title: const Text('Calculadora', style: TextStyle(fontSize: 30)),
       ),
-
 
       // --------------------------------------------------------
       // Corpo da calculadora
       // --------------------------------------------------------
       body: Column(
         children: [
-
           // VISOR ==============================================
           Container(
             height: 200,
@@ -153,13 +149,9 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
 
             child: Text(
               visor,
-              style: const TextStyle(
-                fontSize: 48,
-                color: Colors.white,
-              ),
+              style: const TextStyle(fontSize: 48, color: Colors.white),
             ),
           ),
-
 
           // PRIMEIRA LINHA =======================================
           Row(
@@ -172,7 +164,6 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
             ],
           ),
 
-
           // SEGUNDA LINHA
           Row(
             children: [
@@ -183,7 +174,6 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
               botaoOperacao('×'),
             ],
           ),
-
 
           // TERCEIRA LINHA =======================================
           Row(
@@ -196,19 +186,10 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
             ],
           ),
 
-
           // ÚLTIMA LINHA =======================================
           Row(
             children: [
               limpar(),
-
-              // Por enquanto o C apenas imprime no console.
-              // ElevatedButton(
-              //   onPressed: () {
-              //     print('C');
-              //   },
-              //   child: const Text('C'),
-              // ),
 
               botaoNumero('0'),
 
