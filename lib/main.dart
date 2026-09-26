@@ -101,6 +101,20 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
     );
   }
 
+    // ----------------------------------------------------------
+  // Botão de limpar
+  // ----------------------------------------------------------
+  Widget limpar() {
+    return ElevatedButton(
+      onPressed: () {
+        setState(() {
+          visor = '0';
+        });
+      },
+      child: const Text('C'),
+    );
+  }
+
 
   // ==========================================================
   // CONSTRUÇÃO DA TELA
@@ -186,14 +200,15 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
           // ÚLTIMA LINHA =======================================
           Row(
             children: [
+              limpar(),
 
               // Por enquanto o C apenas imprime no console.
-              ElevatedButton(
-                onPressed: () {
-                  print('C');
-                },
-                child: const Text('C'),
-              ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     print('C');
+              //   },
+              //   child: const Text('C'),
+              // ),
 
               botaoNumero('0'),
 
