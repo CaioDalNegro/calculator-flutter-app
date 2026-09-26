@@ -10,6 +10,7 @@ void main() {
 
     // Confere se os textos esperados estão na tela
     expect(find.text('Calculadora'), findsOneWidget);
-    expect(find.text('0'), findsOneWidget);
+    // Dois "0": um no visor e outro no botão
+    expect(find.text('0'), findsNWidgets(2));
   });
 }
