@@ -18,16 +18,44 @@ class CalculadoraApp extends StatelessWidget {
           title: Text('Calculadora', style: TextStyle(fontSize: 30)),
         ),
 
-        // Visor da calculadora
+        // Visor da calculadora ------------------------------->
         body: Container(
           height: 200,
           color: Colors.black,
           padding: EdgeInsets.all(24),
           alignment: Alignment.bottomRight, // número à direita, como nas calculadoras
-          child: Text(
-            '0',
-            style: TextStyle(fontSize: 48, color: Colors.white),
+
+          child: Column(
+            children: [
+              // Número exibido no visor
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Text(
+                  '0',
+                  style: TextStyle(
+                    fontSize: 48,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+
+              Text(
+                'primeiro',
+                style: TextStyle(color: Colors.white),
+              ),
+
+              Text(
+                'segundo',
+                style: TextStyle(color: Colors.white),
+              ),
+
+              Text(
+                'terceiro',
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
           ),
+
         ),
         
       ),
