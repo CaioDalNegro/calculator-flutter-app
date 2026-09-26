@@ -17,7 +17,7 @@ class CalculadoraApp extends StatelessWidget {
         appBar: AppBar(
           title: Text('Calculadora', style: TextStyle(fontSize: 30)),
         ),
-        
+
         // Visor da calculadora
         body: Container(
           height: 200,
@@ -29,6 +29,7 @@ class CalculadoraApp extends StatelessWidget {
             style: TextStyle(fontSize: 48, color: Colors.white),
           ),
         ),
+        
       ),
     );
   }
