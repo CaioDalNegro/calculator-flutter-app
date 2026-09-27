@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
 
-//INÍCIO DO APLICATIVO ============================================================
+// ==========================================================
+// CORES DO APLICATIVO
+// ==========================================================
+// Ficam em um só lugar: para mudar o visual, basta mudar aqui.
+// Formato: 0xFF + código hexadecimal da cor (o FF é a opacidade: 100%).
+const corFundo = Colors.black;
+const corNumero = Color(0xFF333333); // cinza escuro
+const corOperacao = Color(0xFFFF9500); // laranja
+const corLimpar = Color(0xFFA5A5A5); // cinza claro
+
 void main() {
   runApp(const CalculadoraApp());
 }
 
-/* 
+/*
  WIDGET PRINCIPAL DO APLICATIVO
 
  - O CalculadoraApp é StatelessWidget porque ele não precisa
  controlar nenhuma informação que muda.
 
- A informação que muda (o visor) ficará na TelaCalculadora.
+ A informação que muda (o visor) fica na TelaCalculadora.
 */
 class CalculadoraApp extends StatelessWidget {
   const CalculadoraApp({super.key});
@@ -19,25 +28,16 @@ class CalculadoraApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      // Remove a faixa "DEBUG" do canto da tela.
       debugShowCheckedModeBanner: false,
-
-      // Define a primeira tela do aplicativo.
       home: const TelaCalculadora(),
     );
   }
 }
 
-/* 
+/*
   TELA DA CALCULADORA
   - A tela é Stateful porque o valor do visor pode mudar.
-
- Exemplo:
- visor = '0'
- usuário aperta 5
- visor = '5'
 */
-
 class TelaCalculadora extends StatefulWidget {
   const TelaCalculadora({super.key});
 
@@ -45,13 +45,14 @@ class TelaCalculadora extends StatefulWidget {
   State<TelaCalculadora> createState() => _TelaCalculadoraState();
 }
 
-/* 
-  ESTADO DA CALCULADORA ============================================================
-*/
 class _TelaCalculadoraState extends State<TelaCalculadora> {
   String visor = '0'; // Guarda o texto que aparece no visor.
   double? primeiroNumero; // Guarda o primeiro número da conta.
   String? operacao; // Guarda qual operação o usuário escolheu.
+
+  // ==========================================================
+  // AÇÕES (o que acontece quando um botão é clicado)
+  // ==========================================================
 
   void digitarNumero(String numero) {
     setState(() {
@@ -59,10 +60,9 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
       // substituímos o 0 pelo número digitado.
       if (visor == '0') {
         visor = numero;
-      }
-      // Caso contrário, adicionamos o número
-      // ao final do que já está no visor.
-      else {
+      } else {
+        // Caso contrário, adicionamos o número
+        // ao final do que já está no visor.
         visor = visor + numero;
       }
     });
@@ -104,45 +104,55 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
     });
   }
 
-  /* 
-   Botão de número
-   
-   - Método para evitar repetir o mesmo código
-   várias vezes nos botões.
+  void limpar() {
+    setState(() {
+      visor = '0';
+    });
+  }
+
+  // ==========================================================
+  // BOTÕES (como cada botão é desenhado)
+  // ==========================================================
+
+  /*
+   Botão genérico: todos os botões da calculadora usam este método.
+   Ele recebe o texto, a cor e a ação que deve acontecer no clique.
+
+   - Expanded: faz o botão dividir o espaço da linha igualmente
+     com os outros botões.
+   - Padding: cria um espaço entre um botão e outro.
   */
+  Widget botao(String texto, Color cor, void Function() aoClicar) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.all(6),
+        child: ElevatedButton(
+          onPressed: aoClicar,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: cor, // cor de fundo
+            foregroundColor: Colors.white, // cor do texto
+            minimumSize: const Size.fromHeight(80), // altura do botão
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24), // cantos arredondados
+            ),
+            textStyle: const TextStyle(fontSize: 28),
+          ),
+          child: Text(texto),
+        ),
+      ),
+    );
+  }
+
   Widget botaoNumero(String numero) {
-    return ElevatedButton(
-      onPressed: () {
-        digitarNumero(numero);
-      },
-      child: Text(numero),
-    );
+    return botao(numero, corNumero, () {
+      digitarNumero(numero);
+    });
   }
 
-  // ----------------------------------------------------------
-  // Botão de operação
-  // ----------------------------------------------------------
   Widget botaoOperacao(String simbolo) {
-    return ElevatedButton(
-      onPressed: () {
-        escolherOperacao(simbolo);
-      },
-      child: Text(simbolo),
-    );
-  }
-
-  // ----------------------------------------------------------
-  // Botão de limpar
-  // ----------------------------------------------------------
-  Widget limpar() {
-    return ElevatedButton(
-      onPressed: () {
-        setState(() {
-          visor = '0';
-        });
-      },
-      child: const Text('C'),
-    );
+    return botao(simbolo, corOperacao, () {
+      escolherOperacao(simbolo);
+    });
   }
 
   // ==========================================================
@@ -151,86 +161,85 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // --------------------------------------------------------
-      // Barra superior
-      // --------------------------------------------------------
+      backgroundColor: corFundo,
+
       appBar: AppBar(
-        title: const Text('Calculadora', style: TextStyle(fontSize: 30)),
+        backgroundColor: corFundo,
+        foregroundColor: Colors.white,
+        title: const Text('Calculadora'),
       ),
 
-      // --------------------------------------------------------
-      // Corpo da calculadora
-      // --------------------------------------------------------
-      body: Column(
-        children: [
-          // VISOR ==============================================
-          Container(
-            height: 200,
-            color: Colors.black,
+      // SafeArea: evita que o conteúdo fique embaixo da barra
+      // de navegação ou do "entalhe" (notch) do celular.
+      body: SafeArea(
+        child: Column(
+          children: [
+            // VISOR ==============================================
+            // Expanded: o visor ocupa todo o espaço que sobrar
+            // depois dos botões, em qualquer tamanho de tela.
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.all(24),
+                alignment: Alignment.bottomRight,
 
-            // Espaçamento interno do visor.
-            padding: const EdgeInsets.all(24),
-
-            // Coloca o número no canto inferior direito.
-            alignment: Alignment.bottomRight,
-
-            child: Text(
-              visor,
-              style: const TextStyle(fontSize: 48, color: Colors.white),
-            ),
-          ),
-
-          // PRIMEIRA LINHA =======================================
-          Row(
-            children: [
-              botaoNumero('1'),
-              botaoNumero('2'),
-              botaoNumero('3'),
-
-              botaoOperacao('÷'),
-            ],
-          ),
-
-          // SEGUNDA LINHA
-          Row(
-            children: [
-              botaoNumero('4'),
-              botaoNumero('5'),
-              botaoNumero('6'),
-
-              botaoOperacao('×'),
-            ],
-          ),
-
-          // TERCEIRA LINHA =======================================
-          Row(
-            children: [
-              botaoNumero('7'),
-              botaoNumero('8'),
-              botaoNumero('9'),
-
-              botaoOperacao('-'),
-            ],
-          ),
-
-          // ÚLTIMA LINHA =======================================
-          Row(
-            children: [
-              limpar(),
-
-              botaoNumero('0'),
-
-              ElevatedButton(
-                onPressed: () {
-                  calcular();
-                },
-                child: const Text('='),
+                // FittedBox: diminui o texto quando o número é grande
+                // demais para caber na largura da tela.
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    visor,
+                    style: const TextStyle(
+                      fontSize: 72,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w300, // letra mais fina
+                    ),
+                  ),
+                ),
               ),
+            ),
 
-              botaoOperacao('+'),
-            ],
-          ),
-        ],
+            // BOTÕES =============================================
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      botaoNumero('1'),
+                      botaoNumero('2'),
+                      botaoNumero('3'),
+                      botaoOperacao('÷'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      botaoNumero('4'),
+                      botaoNumero('5'),
+                      botaoNumero('6'),
+                      botaoOperacao('×'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      botaoNumero('7'),
+                      botaoNumero('8'),
+                      botaoNumero('9'),
+                      botaoOperacao('-'),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      botao('C', corLimpar, limpar),
+                      botaoNumero('0'),
+                      botao('=', corOperacao, calcular),
+                      botaoOperacao('+'),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
