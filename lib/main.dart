@@ -68,11 +68,14 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
     });
   }
 
-  void escolherOperacao(String simbolo) {
-    primeiroNumero = double.parse(visor);
-    operacao = simbolo;
+  void escolherOperacao(String novaOperacao) {
+    if (operacao != null) {
+      calcular();
+    }
 
     setState(() {
+      primeiroNumero = double.parse(visor);
+      operacao = novaOperacao;
       visor = '0';
     });
   }
@@ -100,7 +103,12 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
     }
 
     setState(() {
+      // resultado da conta vai para o visor
       visor = resultado.toString();
+
+      // A conta terminou.
+      // Então não existe mais uma operação pendente.
+      operacao = null;
     });
   }
 
