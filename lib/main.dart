@@ -77,6 +77,33 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
     });
   }
 
+  void calcular() {
+    double segundoNumero = double.parse(visor);
+    double resultado = 0;
+
+    switch (operacao) {
+      case '+':
+        resultado = primeiroNumero! + segundoNumero;
+        break;
+
+      case '-':
+        resultado = primeiroNumero! - segundoNumero;
+        break;
+
+      case '×':
+        resultado = primeiroNumero! * segundoNumero;
+        break;
+
+      case '÷':
+        resultado = primeiroNumero! / segundoNumero;
+        break;
+    }
+
+    setState(() {
+      visor = resultado.toString();
+    });
+  }
+
   /* 
    Botão de número
    
@@ -193,10 +220,9 @@ class _TelaCalculadoraState extends State<TelaCalculadora> {
 
               botaoNumero('0'),
 
-              // Por enquanto o = apenas imprime no console.
               ElevatedButton(
                 onPressed: () {
-                  print('=');
+                  calcular();
                 },
                 child: const Text('='),
               ),
